@@ -12,6 +12,7 @@ namespace Rvt2Excel.Parallel
     {
         private FilteredElementCollector collector;
         private ElementIntersectsSolidFilter solidFilter;
+        public Element Self { get; private set; }
 
         public SolidTaskBucket(Element element)
         {
@@ -25,6 +26,7 @@ namespace Rvt2Excel.Parallel
                     break;
                 }
             }
+            Self = element;
         }
 
         public void SetElementCollector(Document doc)
@@ -91,7 +93,8 @@ namespace Rvt2Excel.Parallel
 
             foreach (var item in tasks)
             {
-                yield return item.TaskAsync.Result;
+                IList<Element> result = item.TaskAsync.Result;
+                yield return result.Where(elem => elem.Id.IntegerValue != item.Self.Id.IntegerValue).ToList();
             }
         }
     }

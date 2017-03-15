@@ -35,43 +35,35 @@ namespace Rvt2Excel
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            //SolidTaskBucket[] tasks = new SolidTaskBucket[100];
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    GeometryElement geomElement;
-            //    Element elem = doc.GetElement(reference);
-            //    geomElement = elem.get_Geometry(new Options { ComputeReferences = true });
-            //    foreach (var geomObj in geomElement)
-            //    {
-            //        Solid solid = geomObj as Solid;
-            //        if (solid != null && solid.Volume != 0)
-            //        {
-            //            tasks[i] = new SolidTaskBucket(solid);
-            //            tasks[i].SetElementCollector(doc);
-            //            tasks[i].Run();
-            //        }
-            //    }
-            //}
-            //TaskBucket.WaitAll(tasks);
-            //foreach (var collector in tasks)
-            //{
-            //    count += collector.GetResult().Count;
-            //}
-
             Element[] elementCollector = new Element[references.Count];
+            Dictionary<int, int> idToIndex = new Dictionary<int, int>();
             for (int i = 0; i < elementCollector.Length; i++)
             {
                 elementCollector[i] = doc.GetElement(references[i]);
+                idToIndex.Add(elementCollector[i].Id.IntegerValue, i);
             }
+            int index = 0;
+            List<Element[]> joins = new List<Element[]>();
             foreach (var elems in SolidTaskUtil.ParallelSolidFilter(doc, elementCollector))
             {
-                string dialog = "";
-                int index = 1;
                 foreach (var elem in elems)
                 {
-                    dialog += string.Format("{0}: {1}\n", index++, elem.Id);
+                    if (!idToIndex.ContainsKey(elem.Id.IntegerValue) || idToIndex[elem.Id.IntegerValue] > index)
+                    {
+                        joins.Add(new Element[] { elementCollector[index], elem });
+                    }
                 }
-                TaskDialog.Show("Revit", dialog);
+                index++;
+            }
+
+            using (Transaction trans = new Transaction(doc, "Join"))
+            {
+                trans.Start();
+                foreach (var join in joins)
+                {
+                    JoinGeometryUtils.JoinGeometry(doc, join[0], join[1]);
+                }
+                trans.Commit();
             }
 
             sw.Stop();
