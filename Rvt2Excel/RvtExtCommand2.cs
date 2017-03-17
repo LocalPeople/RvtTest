@@ -27,7 +27,7 @@ namespace Rvt2Excel
             }
 
             IList<Reference> references;
-            if (PickObjects(uiDoc, out references, "请选择构件"))
+            if (Selector.PickObjects(uiDoc, out references, "请选择构件"))
             {
                 return Result.Cancelled;
             }
@@ -70,32 +70,6 @@ namespace Rvt2Excel
             TaskDialog.Show("Revit", sw.Elapsed.ToString());
 
             return Result.Succeeded;
-        }
-
-        private bool PickObject(UIDocument uiDoc, out Reference reference, string tip)
-        {
-            try
-            {
-                reference = uiDoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, tip);
-            }
-            catch
-            {
-                reference = null;
-            }
-            return reference == null;
-        }
-
-        private bool PickObjects(UIDocument uiDoc, out IList<Reference> references, string tip)
-        {
-            try
-            {
-                references = uiDoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element, tip);
-            }
-            catch
-            {
-                references = null;
-            }
-            return references == null;
         }
     }
 }
