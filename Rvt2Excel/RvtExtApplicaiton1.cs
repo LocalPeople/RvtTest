@@ -27,7 +27,9 @@ namespace Rvt2Excel
             }
 
             string dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            ribbonPanel.AddItem(new PushButtonData("ButtonSettingUp", "\n\n导出\n构件表单", Path.Combine(dirName, "Rvt2Excel.dll"), "Rvt2Excel.RvtExtCommand1"));
+            ribbonPanel.AddItem(new PushButtonData("ButtonExport", "\n\n导出\n构件表单", Path.Combine(dirName, "Rvt2Excel.dll"), "Rvt2Excel.RvtExtCommand1"));
+            ribbonPanel.AddItem(new PushButtonData("ButtonCopy", "\n\n复制\n属性", Path.Combine(dirName, "Rvt2Excel.dll"), "Rvt2Excel.ParamsCopy.RvtExtCommand1"));
+            ribbonPanel.AddItem(new PushButtonData("ButtonParalJoin", "\n\n自动\n连接构件", Path.Combine(dirName, "Rvt2Excel.dll"), "Rvt2Excel.RvtExtCommand2"));
 
             return Result.Succeeded;
         }

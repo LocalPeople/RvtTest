@@ -32,8 +32,8 @@ namespace Rvt2Excel
                 return Result.Cancelled;
             }
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
 
             Element[] elementCollector = new Element[references.Count];
             Dictionary<int, int> idToIndex = new Dictionary<int, int>();
@@ -66,8 +66,8 @@ namespace Rvt2Excel
                 trans.Commit();
             }
 
-            sw.Stop();
-            TaskDialog.Show("Revit", sw.Elapsed.ToString());
+            //sw.Stop();
+            //TaskDialog.Show("Revit", sw.Elapsed.ToString());
 
             return Result.Succeeded;
         }
